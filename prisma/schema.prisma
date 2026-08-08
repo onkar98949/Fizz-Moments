@@ -1,0 +1,253 @@
+// Moment — Prisma schema
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum ReactionType {
+  HEART
+  TEARY_EYES
+  SMILE
+}
+
+enum TemplateCategory {
+  LOVE
+  BIRTHDAY
+  ANNIVERSARY
+  MINIMAL
+  SCRAPBOOK
+}
+
+enum StoryTemplateCategory {
+  LOVE
+  TRAVEL
+  BIRTHDAY
+  ANNIVERSARY
+  FAMILY
+  GRADUATION
+  THANK_YOU
+}
+
+/// A Story is a title/subtitle/recipient/music envelope around an ordered
+/// array of scenes. Each scene instance is `{ id, scene, variant, data }` —
+/// see SceneInstance in src/scenes/schema.ts, the single source of truth
+/// for that shape. Never store HTML/video/pre-baked output here, only
+/// structured data the player renders dynamically.
+model Story {
+  id            String   @id @default(cuid())
+  editToken     String   @unique @default(cuid()) @map("edit_token")
+  userId        String?  @map("user_id")
+  title         String
+  subtitle      String?
+  recipientName String   @map("recipient_name")
+  music         String?
+  scenes        Json
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  reactions Reaction[]
+
+  @@index([userId])
+  @@map("stories")
+}
+
+/// Catalog of prebuilt scene sequences shown in the Story Templates picker.
+/// `seedScenes` is cloned into a new Story.scenes when a user picks this
+/// template — see SceneInstance in src/scenes/schema.ts.
+model StoryTemplate {
+  id          String                 @id @default(cuid())
+  name        String
+  category    StoryTemplateCategory
+  description String
+  seedScenes  Json                   @map("seed_scenes")
+  createdAt   DateTime               @default(now()) @map("created_at")
+
+  @@map("story_templates")
+}
+
+model Reaction {
+  id        String       @id @default(cuid())
+  storyId   String       @map("story_id")
+  reaction  ReactionType
+  createdAt DateTime     @default(now()) @map("created_at")
+
+  story Story @relation(fields: [storyId], references: [id], onDelete: Cascade)
+
+  @@index([storyId])
+  @@map("reactions")
+}
+
+/// Catalog of prebuilt starting points shown in the Templates gallery.
+/// `seedScenes` is cloned into a new TemplateProject.scenes when a user
+/// picks this template — see Scene[] shape in src/types/template.ts.
+model Template {
+  id          String           @id @default(cuid())
+  name        String
+  category    TemplateCategory
+  description String
+  seedScenes  Json             @map("seed_scenes")
+  createdAt   DateTime         @default(now()) @map("created_at")
+
+  @@map("templates")
+}
+
+/// A user's editable/shareable Templates creation. Anonymous, like Story —
+/// editToken is the private editor link, id is the public playback link.
+/// `scenes` is the live source of truth for the editor and player alike;
+/// see Scene[] shape in src/types/template.ts.
+model TemplateProject {
+  id        String   @id @default(cuid())
+  editToken String   @unique @default(cuid()) @map("edit_token")
+  userId    String?  @map("user_id")
+  title     String
+  music     String?
+  scenes    Json
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([userId])
+  @@map("template_projects")
+}
+
+/// A "Scratch Card Collection" gift — anonymous and editable/shareable like
+/// Story and TemplateProject. `cards` is the ordered array of scratch
+/// cards (3–20, enforced at the zod layer); see ScratchCard shape in
+/// src/types/gifts.ts. The first of the Romantic Interactive Gifts.
+model ScratchCardGift {
+  id        String   @id @default(cuid())
+  editToken String   @unique @default(cuid()) @map("edit_token")
+  userId    String?  @map("user_id")
+  title     String
+  cards     Json
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([userId])
+  @@map("scratch_card_gifts")
+}
+
+/// The second Romantic Interactive Gift — a chain of clues, each solved
+/// with a code before the next unlocks. `clues` is the ordered array; see
+/// TreasureHuntClue shape in src/types/gifts.ts. The final reveal
+/// (message + optional photo) is its own pair of columns since it's a
+/// distinct step, not "just another clue" — it never asks for a code.
+model TreasureHunt {
+  id            String   @id @default(cuid())
+  editToken     String   @unique @default(cuid()) @map("edit_token")
+  userId        String?  @map("user_id")
+  title         String
+  clues         Json
+  finalMessage  String   @map("final_message")
+  finalPhotoUrl String?  @map("final_photo_url")
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  @@index([userId])
+  @@map("treasure_hunts")
+}
+
+/// The third Romantic Interactive Gift — a single animated gift box the
+/// recipient taps open. No list/chain here (unlike the other two): the box
+/// holds one message + one optional photo, so the whole editor is just two
+/// fields — the complexity lives entirely in the reveal animation.
+model GiftBox {
+  id        String   @id @default(cuid())
+  editToken String   @unique @default(cuid()) @map("edit_token")
+  userId    String?  @map("user_id")
+  title     String
+  message   String
+  photoUrl  String?  @map("photo_url")
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([userId])
+  @@map("gift_boxes")
+}
+
+/// The fourth Romantic Interactive Gift — a Spotify-Wrapped-style recap.
+/// `startDate` drives an evergreen "together for N days" count-up computed
+/// at render time (never a stale stored number). `stats` are the small
+/// count-up numbers (memories/trips/etc); `moments` is one flexible list
+/// covering every spec'd slide type (favorite place, funniest memory, best
+/// photo, inside jokes, future goals) since they're all the same shape —
+/// an emoji, a label, text, and an optional photo.
+model LoveWrapped {
+  id             String   @id @default(cuid())
+  editToken      String   @unique @default(cuid()) @map("edit_token")
+  userId         String?  @map("user_id")
+  title          String
+  startDate      DateTime @map("start_date")
+  stats          Json
+  moments        Json
+  closingMessage String   @map("closing_message")
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  @@index([userId])
+  @@map("love_wrapped")
+}
+
+/// The fifth Romantic Interactive Gift — a book of redeemable coupons.
+/// `coupons` includes a `redeemed` flag per coupon that's flipped by a
+/// dedicated public action (not the edit token) when the recipient taps
+/// Redeem, so the stamped state persists and survives a page reload.
+model CouponBook {
+  id        String   @id @default(cuid())
+  editToken String   @unique @default(cuid()) @map("edit_token")
+  userId    String?  @map("user_id")
+  title     String
+  coupons   Json
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([userId])
+  @@map("coupon_books")
+}
+
+/// The sixth Romantic Interactive Gift — a relationship quiz. One flexible
+/// question shape (prompt + 2-4 options, each with a label and an optional
+/// photo) covers all four spec'd question types — multiple choice, image,
+/// emoji, and true/false are just different fillings of the same shape,
+/// not four separate code paths. `resultTiers` maps a score percentage
+/// range to a title + message, giving the "funny result" without needing
+/// per-exact-score authoring.
+model RelationshipQuiz {
+  id           String   @id @default(cuid())
+  editToken    String   @unique @default(cuid()) @map("edit_token")
+  userId       String?  @map("user_id")
+  title        String
+  questions    Json
+  resultTiers  Json     @map("result_tiers")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  @@index([userId])
+  @@map("relationship_quizzes")
+}
+
+enum FeedbackCategory {
+  FEEDBACK
+  IDEA
+  IMPROVEMENT
+  BUG
+}
+
+/// A message submitted through /contact — no account, no reply thread,
+/// just a one-way note from a visitor. `email` is optional since we don't
+/// require one to leave feedback.
+model Feedback {
+  id        String           @id @default(cuid())
+  category  FeedbackCategory
+  message   String
+  email     String?
+  createdAt DateTime         @default(now()) @map("created_at")
+
+  @@map("feedback")
+}

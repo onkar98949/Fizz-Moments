@@ -1,26 +1,384 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@custom-variant dark (&:is(.dark *));
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-display: var(--font-display);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --color-ink-muted: var(--ink-muted);
+  --color-primary-hover: var(--primary-hover);
+  --color-primary-active: var(--primary-active);
+  --color-primary-light: var(--primary-light);
+  --color-coral: var(--coral);
+  --color-lavender: var(--lavender);
+  --color-sky: var(--sky);
+  --color-warm-yellow: var(--warm-yellow);
+  --font-script: var(--font-script);
+
+  /* Standardized radius scale — every rounded-* utility in the app resolves
+     to one of these seven values. Nothing outside this scale is "random". */
+  --radius-xs: 8px;
+  --radius-sm: 12px;
+  --radius-md: 16px; /* inputs, textarea */
+  --radius-lg: 20px;
+  --radius-xl: 24px; /* cards */
+  --radius-2xl: 28px; /* modals */
+  --radius-3xl: 32px; /* hero-scale visual frames (phone preview, story cards) */
+  --radius-4xl: 40px;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+:root {
+  /* A warm, barely-there off-white instead of flat white — the page should
+     never read as a stark #fff canvas. */
+  --background: #fafaf8;
+  --foreground: #1b1b1f;
+  --card: #ffffff;
+  --card-foreground: #1b1b1f;
+  --popover: #ffffff;
+  --popover-foreground: #1b1b1f;
+  --primary: #8cd94a;
+  --primary-foreground: #ffffff;
+  --secondary: #f4f4f1;
+  --secondary-foreground: #1b1b1f;
+  --muted: #f4f4f1;
+  --muted-foreground: #6b6e73;
+  --accent: #ddf7c8;
+  --accent-foreground: #2f5e12;
+  --destructive: #d64545;
+  --border: #ebebe7;
+  --input: #ebebe7;
+  --ring: #8cd94a;
+  --chart-1: #8cd94a;
+  --chart-2: #ff8a65;
+  --chart-3: #b79ced;
+  --chart-4: #8fd3ff;
+  --chart-5: #ffd166;
+  --sidebar: #ffffff;
+  --sidebar-foreground: #1b1b1f;
+  --sidebar-primary: #8cd94a;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #ddf7c8;
+  --sidebar-accent-foreground: #2f5e12;
+  --sidebar-border: #ebebe7;
+  --sidebar-ring: #8cd94a;
+
+  /* Moment brand tokens */
+  --ink-muted: #8a8d91;
+  --primary-hover: #79c93a;
+  --primary-active: #5ead27;
+  --primary-light: #ddf7c8;
+  --coral: #ff8a65;
+  --lavender: #b79ced;
+  --sky: #8fd3ff;
+  --warm-yellow: #ffd166;
+  --gradient-primary: linear-gradient(135deg, #8cd94a 0%, #b7f36a 100%);
+  --gradient-love: linear-gradient(135deg, #ff8a65 0%, #ffb199 100%);
+  --gradient-birthday: linear-gradient(135deg, #ffd166 0%, #ffe9a8 100%);
+  --gradient-dreamy: linear-gradient(135deg, #b79ced 0%, #d7c8ff 100%);
+  --moment-gradient: var(--gradient-primary);
+
+  /* Elevation — neutral, ink-based, layered. No tinted glow by default;
+     cards should look like they're floating on the page, not lit from
+     underneath. Reach for --shadow-glow explicitly for CTA/selected state. */
+  --shadow-color: 27 27 31;
+  --shadow-xs: 0 1px 2px rgb(var(--shadow-color) / 0.04);
+  --shadow-sm: 0 1px 2px rgb(var(--shadow-color) / 0.04), 0 4px 12px -4px rgb(var(--shadow-color) / 0.07);
+  --shadow-md: 0 2px 4px rgb(var(--shadow-color) / 0.04), 0 12px 28px -10px rgb(var(--shadow-color) / 0.1);
+  --shadow-lg: 0 4px 8px rgb(var(--shadow-color) / 0.04), 0 24px 48px -14px rgb(var(--shadow-color) / 0.14);
+  --shadow-xl: 0 8px 16px rgb(var(--shadow-color) / 0.05), 0 40px 80px -20px rgb(var(--shadow-color) / 0.18);
+
+  /* Motion timing — reused by both CSS transitions and as the source of
+     truth for the Framer Motion variants in src/lib/motion.ts, so every
+     hover/press/reveal in the app shares the same rhythm. */
+  --ease-out-soft: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --duration-fast: 150ms;
+  --duration-base: 250ms;
+  --duration-slow: 450ms;
+}
+
+.dark {
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.205 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.205 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.922 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.556 0 0);
+  --chart-1: oklch(0.87 0 0);
+  --chart-2: oklch(0.556 0 0);
+  --chart-3: oklch(0.439 0 0);
+  --chart-4: oklch(0.371 0 0);
+  --chart-5: oklch(0.269 0 0);
+  --sidebar: oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.556 0 0);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer utilities {
+  .font-display {
+    font-family: var(--font-display), serif;
+  }
+
+  .font-script {
+    font-family: var(--font-script), cursive;
+  }
+
+  .text-gradient {
+    background-image: var(--moment-gradient);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+  }
+
+  .bg-moment-gradient {
+    background-image: var(--moment-gradient);
+  }
+
+  /* Standardized type scale. Card-title/body/caption/meta are fixed sizes;
+     hero/section use clamp() so the headline itself scales fluidly with the
+     viewport instead of jumping at a breakpoint. */
+  .text-hero {
+    font-size: clamp(2.75rem, 1.85rem + 3.6vw, 4rem);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+  }
+
+  /* Editorial hero headline — larger and tighter than .text-hero, reserved
+     for the landing page's single opening statement. */
+  .text-display {
+    font-size: clamp(3rem, 1.7rem + 5.6vw, 5.75rem);
+    line-height: 1.02;
+    letter-spacing: -0.025em;
+  }
+
+  /* A plain, unboxed label — small caps, letter-spaced, no pill/background.
+     The restrained alternative to the old accent-pill eyebrow. */
+  .text-eyebrow {
+    font-size: 0.8125rem;
+    line-height: 1;
+    letter-spacing: 0.14em;
+  }
+
+  .text-section {
+    font-size: clamp(1.75rem, 1.4rem + 1.5vw, 2.5rem);
+    line-height: 1.12;
+    letter-spacing: -0.01em;
+  }
+
+  .text-card-title {
+    font-size: 1.625rem;
+    line-height: 1.25;
+  }
+
+  .text-body-lg {
+    font-size: 1.125rem;
+    line-height: 1.6;
+  }
+
+  .text-caption {
+    font-size: 0.9375rem;
+    line-height: 1.5;
+  }
+
+  .text-meta {
+    font-size: 0.8125rem;
+    line-height: 1.4;
+    letter-spacing: 0.01em;
+  }
+
+  .glass-surface {
+    background-color: color-mix(in oklch, var(--card) 72%, transparent);
+    backdrop-filter: blur(20px) saturate(160%);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    border: 1px solid color-mix(in oklch, var(--border) 50%, transparent);
+  }
+
+  /* Elevation utilities — layered, neutral, no tinted glow. A card should
+     look like it's floating on the page, not lit from underneath. */
+  .shadow-soft {
+    box-shadow: var(--shadow-sm);
+  }
+
+  .shadow-soft-lg {
+    box-shadow: var(--shadow-md);
+  }
+
+  .shadow-soft-xl {
+    box-shadow: var(--shadow-lg);
+  }
+
+  .shadow-float {
+    box-shadow: var(--shadow-xl);
+  }
+
+  /* The one place a tinted glow belongs: an explicit CTA / selected / active
+     accent, never a card's resting state. */
+  .shadow-glow-primary {
+    box-shadow:
+      var(--shadow-sm),
+      0 0 0 1px color-mix(in oklch, var(--primary) 30%, transparent),
+      0 16px 40px -16px color-mix(in oklch, var(--primary) 55%, transparent);
+  }
+
+  .shadow-glow-rose {
+    box-shadow:
+      var(--shadow-sm),
+      0 0 0 1px color-mix(in oklch, var(--coral) 35%, var(--lavender) 35%),
+      0 18px 44px -16px color-mix(in oklch, var(--coral) 45%, var(--lavender) 45%);
+  }
+
+  .transition-spring {
+    transition-timing-function: var(--ease-spring);
+  }
+
+  .transition-soft {
+    transition-timing-function: var(--ease-out-soft);
+  }
+
+  /* Blurred, low-opacity decorative background blob. Place inside a
+     `relative overflow-hidden` ancestor and position with inset utilities.
+     Drifts continuously on purpose — a scene background that never moves
+     is what makes a scene read as a static panel instead of a held shot.
+     Kept deliberately faint (0.2) — a hero gradient should be felt, not seen. */
+  .ambient-orb {
+    pointer-events: none;
+    border-radius: 9999px;
+    filter: blur(80px);
+    opacity: 0.2;
+    animation: moment-orb-drift 18s ease-in-out infinite;
+  }
+
+  /* Seamless horizontal marquee — pair with a track whose content is
+     duplicated twice (`[...items, ...items]`) so translating by -50% loops
+     cleanly. Used by the Camera Roll scene's background filmstrip and the
+     landing page's capsule marquee. */
+  .animate-marquee {
+    animation: moment-marquee linear infinite;
+  }
+
+  /* Claymorphism recipe — a bright inset highlight (top-left), a soft inset
+     shadow (bottom-right) to fake volume, and an outer drop shadow to float
+     the piece above the page. Pair with a .clay-* tint for the fill. Used
+     sparingly, for a handful of decorative "object" accents, not for real
+     UI chrome — clay is a landing-page flourish here, not a component style. */
+  .clay {
+    box-shadow:
+      inset 3px 3px 8px rgb(255 255 255 / 0.6),
+      inset -6px -6px 14px rgb(27 27 31 / 0.08),
+      0 18px 32px -12px rgb(27 27 31 / 0.22);
+  }
+
+  /* Saturated enough that a white icon reads clearly on top — real clay
+     (plasticine) is closer to a full, cheerful color than a washed-out
+     pastel; the softness comes from the inset highlight, not a thin tint. */
+  .clay-primary {
+    background: linear-gradient(155deg, color-mix(in oklch, var(--primary) 92%, white) 0%, color-mix(in oklch, var(--primary) 60%, black) 100%);
+  }
+
+  .clay-coral {
+    background: linear-gradient(155deg, color-mix(in oklch, var(--coral) 92%, white) 0%, color-mix(in oklch, var(--coral) 62%, black) 100%);
+  }
+
+  .clay-lavender {
+    background: linear-gradient(155deg, color-mix(in oklch, var(--lavender) 92%, white) 0%, color-mix(in oklch, var(--lavender) 62%, black) 100%);
+  }
+
+  .clay-yellow {
+    background: linear-gradient(155deg, color-mix(in oklch, var(--warm-yellow) 92%, white) 0%, color-mix(in oklch, var(--warm-yellow) 60%, black) 100%);
+  }
+
+  .clay-sky {
+    background: linear-gradient(155deg, color-mix(in oklch, var(--sky) 92%, white) 0%, color-mix(in oklch, var(--sky) 62%, black) 100%);
+  }
+}
+
+@keyframes moment-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes moment-orb-drift {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(14px, -18px) scale(1.08);
+  }
+}
+
+@keyframes moment-shimmer {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(100%);
+  }
 }
