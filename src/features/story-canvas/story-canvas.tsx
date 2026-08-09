@@ -14,11 +14,11 @@ import { ShareDialog } from "./share-dialog";
 
 export function StoryCanvas({ story: initialStory, isSignedIn }: { story: StoryData; isSignedIn: boolean }) {
   const canvas = useStoryCanvas(initialStory);
-  const share = useGatedShare(isSignedIn);
+  const share = useGatedShare(isSignedIn, canvas.save);
 
   return (
     <div className="flex min-h-screen flex-col">
-      <EditorHeader canvas={canvas} onShare={share.requestShare} />
+      <EditorHeader canvas={canvas} onShare={share.requestShare} shareDisabled={share.isPreparing} />
 
       <div className="mx-auto flex w-full max-w-2xl flex-col gap-7 px-5 py-8 sm:gap-9 sm:py-10">
         {canvas.isPreviewOpen ? (

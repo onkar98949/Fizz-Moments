@@ -29,7 +29,7 @@ function requestPhoto(onFile: (file: File) => void) {
 
 export function GiftBoxEditor({ box, isSignedIn }: { box: GiftBoxData; isSignedIn: boolean }) {
   const editor = useGiftBoxEditor(box);
-  const share = useGatedShare(isSignedIn);
+  const share = useGatedShare(isSignedIn, editor.save);
   const [showPreview, setShowPreview] = useState(false);
 
   return (
@@ -50,7 +50,7 @@ export function GiftBoxEditor({ box, isSignedIn }: { box: GiftBoxData; isSignedI
             <Play className="size-3.5" />
             Preview
           </Button>
-          <Button size="sm" variant="outline" onClick={share.requestShare}>
+          <Button size="sm" variant="outline" onClick={share.requestShare} disabled={share.isPreparing}>
             <Share2 className="size-3.5" />
             Share
           </Button>

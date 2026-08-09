@@ -45,7 +45,7 @@ export function FinalCta() {
         <Button
           size="lg"
           nativeButton={false}
-          render={<Link href="/create">Start Creating</Link>}
+          render={<Link href="/gifts">Start Creating</Link>}
         />
       </motion.div>
     </section>

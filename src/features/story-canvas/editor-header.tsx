@@ -59,7 +59,15 @@ function StatChip({ icon, children }: { icon: React.ReactNode; children: React.R
   );
 }
 
-export function EditorHeader({ canvas, onShare }: { canvas: StoryCanvas; onShare: () => void }) {
+export function EditorHeader({
+  canvas,
+  onShare,
+  shareDisabled,
+}: {
+  canvas: StoryCanvas;
+  onShare: () => void;
+  shareDisabled?: boolean;
+}) {
   const photoCount = canvas.scenes.reduce((sum, s) => sum + countPhotos(s.data), 0);
   const totalSeconds = Math.round(canvas.scenes.reduce((sum, s) => sum + getSceneDurationMs(s), 0) / 1000);
 
@@ -101,7 +109,14 @@ export function EditorHeader({ canvas, onShare }: { canvas: StoryCanvas; onShare
           {canvas.isPreviewOpen ? <EyeOff className="size-3.5" /> : <Eye className="size-3.5" />}
           <span className="hidden sm:inline">{canvas.isPreviewOpen ? "Hide" : "Preview"}</span>
         </Button>
-        <Button variant="outline" size="sm" aria-label="Share" onClick={onShare} className="shrink-0 rounded-full">
+        <Button
+          variant="outline"
+          size="sm"
+          aria-label="Share"
+          onClick={onShare}
+          disabled={shareDisabled}
+          className="shrink-0 rounded-full"
+        >
           <Share2 className="size-3.5" />
           <span className="hidden sm:inline">Share</span>
         </Button>

@@ -33,7 +33,7 @@ type Tab = (typeof TABS)[number]["id"];
 export function TemplateEditor({ project, isSignedIn }: { project: TemplateProjectData; isSignedIn: boolean }) {
   const editor = useTemplateEditor(project);
   const [tab, setTab] = useState<Tab>("content");
-  const share = useGatedShare(isSignedIn);
+  const share = useGatedShare(isSignedIn, editor.save);
   const [showPlay, setShowPlay] = useState(false);
 
   useEffect(() => {
@@ -87,7 +87,7 @@ export function TemplateEditor({ project, isSignedIn }: { project: TemplateProje
           <Button size="icon-sm" variant="outline" onClick={() => setShowPlay(true)} aria-label="Play preview" className="rounded-full">
             <Play className="size-4" />
           </Button>
-          <Button size="sm" variant="outline" className="rounded-full" onClick={share.requestShare}>
+          <Button size="sm" variant="outline" className="rounded-full" onClick={share.requestShare} disabled={share.isPreparing}>
             Share
           </Button>
           <Button size="sm" onClick={editor.save} disabled={editor.isSaving} className="rounded-full">

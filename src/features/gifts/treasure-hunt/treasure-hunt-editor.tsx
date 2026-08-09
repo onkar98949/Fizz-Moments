@@ -72,7 +72,7 @@ function PhotoSlot({
 
 export function TreasureHuntEditor({ hunt, isSignedIn }: { hunt: TreasureHuntData; isSignedIn: boolean }) {
   const editor = useTreasureHuntEditor(hunt);
-  const share = useGatedShare(isSignedIn);
+  const share = useGatedShare(isSignedIn, editor.save);
 
   return (
     <div className="mx-auto flex w-full max-w-2xl flex-col gap-6 px-5 py-6 sm:py-10">
@@ -88,7 +88,7 @@ export function TreasureHuntEditor({ hunt, isSignedIn }: { hunt: TreasureHuntDat
           className="ml-1 h-9 max-w-[220px] border-none bg-transparent px-2 font-medium shadow-none focus-visible:ring-0"
         />
         <div className="ml-auto flex items-center gap-1.5">
-          <Button size="sm" variant="outline" onClick={share.requestShare}>
+          <Button size="sm" variant="outline" onClick={share.requestShare} disabled={share.isPreparing}>
             <Share2 className="size-3.5" />
             Share
           </Button>

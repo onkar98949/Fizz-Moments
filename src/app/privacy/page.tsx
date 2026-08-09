@@ -12,7 +12,7 @@ export default function PrivacyPolicyPage() {
   return (
     <LegalPage
       title="Privacy Policy"
-      lastUpdated="August 6, 2026"
+      lastUpdated="August 9, 2026"
       intro="FizzMoments is built to hold something personal — a photo, a message, a memory. This page explains, plainly, what we collect and what we do with it."
     >
       <LegalSection title="What we collect">
@@ -59,11 +59,23 @@ export default function PrivacyPolicyPage() {
         </p>
       </LegalSection>
 
+      <LegalSection title="Analytics">
+        <p>
+          We use PostHog to understand how FizzMoments is actually used — which pages get visited, which
+          features get used, where people get stuck. This is aggregate, product-improvement data. It&apos;s not
+          advertising, we don&apos;t sell it, and we don&apos;t use it to build ad profiles.
+        </p>
+        <p>
+          Browsing or creating anonymously doesn&apos;t attach this activity to a personal profile. If you sign
+          in, some usage may be linked to your account so we can understand how signed-in features are used.
+        </p>
+      </LegalSection>
+
       <LegalSection title="Cookies and tracking">
         <p>
-          FizzMoments doesn&apos;t use advertising cookies or third-party trackers. We don&apos;t run analytics that
-          profile individual visitors. Anything stored in your browser is there to make the app work — for
-          example, remembering where you left off in an editor.
+          FizzMoments doesn&apos;t use advertising cookies or third-party ad trackers. Anything stored in your
+          browser is there to make the app work — for example, remembering where you left off in an editor, or
+          giving our analytics tool a way to tell repeat visits apart from new ones.
         </p>
       </LegalSection>
 

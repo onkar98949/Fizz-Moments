@@ -175,6 +175,14 @@
   html {
     @apply font-sans;
   }
+
+  /* Tailwind's preflight resets <button> to the browser default (a plain
+     arrow cursor), unlike <a>, which keeps the hand cursor natively. Every
+     clickable control in this app should read as clickable. */
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]) {
+    cursor: pointer;
+  }
 }
 
 @layer utilities {

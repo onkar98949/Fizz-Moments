@@ -58,7 +58,7 @@ export function HeroSection() {
             <Button
               size="lg"
               nativeButton={false}
-              render={<Link href="/create">Start Creating</Link>}
+              render={<Link href="/gifts">Start Creating</Link>}
             />
             <p className="text-muted-foreground/80 text-meta">
               Free to start · No app required · Ready in minutes

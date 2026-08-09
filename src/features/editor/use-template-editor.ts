@@ -257,13 +257,15 @@ export function useTemplateEditor(initialProject: TemplateProjectData) {
       if (!result.success) {
         toast.error(result.error);
         setIsSaving(false);
-        return;
+        return false;
       }
       setProject(result.data);
       toast.success("Your project has been saved.");
+      return true;
     } catch (error) {
       if (isNextRedirectError(error)) throw error;
       toast.error("Something went wrong while saving. Please try again.");
+      return false;
     } finally {
       setIsSaving(false);
     }
