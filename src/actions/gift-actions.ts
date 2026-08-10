@@ -22,6 +22,25 @@ import {
   createBlankRelationshipQuiz,
   getRelationshipQuizByEditToken,
   updateRelationshipQuiz,
+  createBlankSecretEnvelope,
+  getSecretEnvelopeByEditToken,
+  updateSecretEnvelope,
+  createBlankFortuneCookie,
+  getFortuneCookieByEditToken,
+  updateFortuneCookie,
+  createBlankMemoryQuiz,
+  getMemoryQuizByEditToken,
+  updateMemoryQuiz,
+  createBlankOpenWhenCollection,
+  getOpenWhenCollectionByEditToken,
+  updateOpenWhenCollection,
+  openLetter,
+  createBlankDateGenerator,
+  getDateGeneratorByEditToken,
+  updateDateGenerator,
+  createBlankHundredReasons,
+  getHundredReasonsByEditToken,
+  updateHundredReasons,
 } from "@/database/queries/gifts";
 import {
   saveScratchCardGiftSchema,
@@ -31,14 +50,27 @@ import {
   saveCouponBookSchema,
   redeemCouponSchema,
   saveRelationshipQuizSchema,
+  saveSecretEnvelopeSchema,
+  saveFortuneCookieSchema,
+  saveMemoryQuizSchema,
+  saveOpenWhenCollectionSchema,
+  openLetterSchema,
+  saveDateGeneratorSchema,
+  saveHundredReasonsSchema,
 } from "@/schemas/gifts";
 import { getCurrentUserId } from "@/lib/supabase/server";
 import type {
   CouponBookData,
+  DateGeneratorData,
+  FortuneCookieData,
   GiftBoxData,
+  HundredReasonsData,
   LoveWrappedData,
+  MemoryQuizData,
+  OpenWhenCollectionData,
   RelationshipQuizData,
   ScratchCardGiftData,
+  SecretEnvelopeData,
   TreasureHuntData,
 } from "@/types/gifts";
 
@@ -237,4 +269,202 @@ export async function saveRelationshipQuizAction(input: unknown): Promise<GiftAc
   revalidatePath(`/gifts/how-well-do-you-know-me/${quiz.id}`);
 
   return { success: true, data: quiz };
+}
+
+// ---------------------------------------------------------------------------
+// Second wave
+// ---------------------------------------------------------------------------
+
+export async function createBlankSecretEnvelopeAction(): Promise<never> {
+  const userId = await getCurrentUserId();
+  const envelope = await createBlankSecretEnvelope(userId);
+  redirect(`/gifts/secret-envelope/edit/${envelope.editToken}`);
+}
+
+export async function saveSecretEnvelopeAction(input: unknown): Promise<GiftActionResult<SecretEnvelopeData>> {
+  const parsed = saveSecretEnvelopeSchema.safeParse(input);
+  if (!parsed.success) {
+    return { success: false, error: parsed.error.issues[0]?.message ?? "Something looks off." };
+  }
+
+  const existing = await getSecretEnvelopeByEditToken(parsed.data.editToken);
+  if (!existing) {
+    return { success: false, error: "This edit link has expired." };
+  }
+
+  const envelope = await updateSecretEnvelope(parsed.data.editToken, {
+    title: parsed.data.title,
+    style: parsed.data.style,
+    recipientName: parsed.data.recipientName,
+    letterTitle: parsed.data.letterTitle,
+    message: parsed.data.message,
+    senderName: parsed.data.senderName,
+    photoUrl: parsed.data.photoUrl,
+  });
+
+  revalidatePath(`/gifts/secret-envelope/edit/${envelope.editToken}`);
+  revalidatePath(`/gifts/secret-envelope/${envelope.id}`);
+
+  return { success: true, data: envelope };
+}
+
+export async function createBlankFortuneCookieAction(): Promise<never> {
+  const userId = await getCurrentUserId();
+  const cookie = await createBlankFortuneCookie(userId);
+  redirect(`/gifts/fortune-cookie/edit/${cookie.editToken}`);
+}
+
+export async function saveFortuneCookieAction(input: unknown): Promise<GiftActionResult<FortuneCookieData>> {
+  const parsed = saveFortuneCookieSchema.safeParse(input);
+  if (!parsed.success) {
+    return { success: false, error: parsed.error.issues[0]?.message ?? "Something looks off." };
+  }
+
+  const existing = await getFortuneCookieByEditToken(parsed.data.editToken);
+  if (!existing) {
+    return { success: false, error: "This edit link has expired." };
+  }
+
+  const cookie = await updateFortuneCookie(parsed.data.editToken, {
+    title: parsed.data.title,
+    recipientName: parsed.data.recipientName,
+    fortunes: parsed.data.fortunes,
+  });
+
+  revalidatePath(`/gifts/fortune-cookie/edit/${cookie.editToken}`);
+  revalidatePath(`/gifts/fortune-cookie/${cookie.id}`);
+
+  return { success: true, data: cookie };
+}
+
+export async function createBlankMemoryQuizAction(): Promise<never> {
+  const userId = await getCurrentUserId();
+  const quiz = await createBlankMemoryQuiz(userId);
+  redirect(`/gifts/memory-quiz/edit/${quiz.editToken}`);
+}
+
+export async function saveMemoryQuizAction(input: unknown): Promise<GiftActionResult<MemoryQuizData>> {
+  const parsed = saveMemoryQuizSchema.safeParse(input);
+  if (!parsed.success) {
+    return { success: false, error: parsed.error.issues[0]?.message ?? "Something looks off." };
+  }
+
+  const existing = await getMemoryQuizByEditToken(parsed.data.editToken);
+  if (!existing) {
+    return { success: false, error: "This edit link has expired." };
+  }
+
+  const quiz = await updateMemoryQuiz(parsed.data.editToken, {
+    title: parsed.data.title,
+    questions: parsed.data.questions,
+    resultTiers: parsed.data.resultTiers,
+  });
+
+  revalidatePath(`/gifts/memory-quiz/edit/${quiz.editToken}`);
+  revalidatePath(`/gifts/memory-quiz/${quiz.id}`);
+
+  return { success: true, data: quiz };
+}
+
+export async function createBlankOpenWhenCollectionAction(): Promise<never> {
+  const userId = await getCurrentUserId();
+  const collection = await createBlankOpenWhenCollection(userId);
+  redirect(`/gifts/open-when/edit/${collection.editToken}`);
+}
+
+export async function saveOpenWhenCollectionAction(
+  input: unknown,
+): Promise<GiftActionResult<OpenWhenCollectionData>> {
+  const parsed = saveOpenWhenCollectionSchema.safeParse(input);
+  if (!parsed.success) {
+    return { success: false, error: parsed.error.issues[0]?.message ?? "Something looks off." };
+  }
+
+  const existing = await getOpenWhenCollectionByEditToken(parsed.data.editToken);
+  if (!existing) {
+    return { success: false, error: "This edit link has expired." };
+  }
+
+  const collection = await updateOpenWhenCollection(parsed.data.editToken, {
+    title: parsed.data.title,
+    letters: parsed.data.letters,
+  });
+
+  revalidatePath(`/gifts/open-when/edit/${collection.editToken}`);
+  revalidatePath(`/gifts/open-when/${collection.id}`);
+
+  return { success: true, data: collection };
+}
+
+export async function openLetterAction(input: unknown): Promise<GiftActionResult<OpenWhenCollectionData>> {
+  const parsed = openLetterSchema.safeParse(input);
+  if (!parsed.success) {
+    return { success: false, error: "That letter couldn't be found." };
+  }
+
+  const collection = await openLetter(parsed.data.id, parsed.data.letterId);
+  if (!collection) {
+    return { success: false, error: "That letter couldn't be found." };
+  }
+
+  revalidatePath(`/gifts/open-when/${collection.id}`);
+
+  return { success: true, data: collection };
+}
+
+export async function createBlankDateGeneratorAction(): Promise<never> {
+  const userId = await getCurrentUserId();
+  const generator = await createBlankDateGenerator(userId);
+  redirect(`/gifts/date-generator/edit/${generator.editToken}`);
+}
+
+export async function saveDateGeneratorAction(input: unknown): Promise<GiftActionResult<DateGeneratorData>> {
+  const parsed = saveDateGeneratorSchema.safeParse(input);
+  if (!parsed.success) {
+    return { success: false, error: parsed.error.issues[0]?.message ?? "Something looks off." };
+  }
+
+  const existing = await getDateGeneratorByEditToken(parsed.data.editToken);
+  if (!existing) {
+    return { success: false, error: "This edit link has expired." };
+  }
+
+  const generator = await updateDateGenerator(parsed.data.editToken, {
+    title: parsed.data.title,
+    ideas: parsed.data.ideas,
+  });
+
+  revalidatePath(`/gifts/date-generator/edit/${generator.editToken}`);
+  revalidatePath(`/gifts/date-generator/${generator.id}`);
+
+  return { success: true, data: generator };
+}
+
+export async function createBlankHundredReasonsAction(): Promise<never> {
+  const userId = await getCurrentUserId();
+  const gift = await createBlankHundredReasons(userId);
+  redirect(`/gifts/100-reasons/edit/${gift.editToken}`);
+}
+
+export async function saveHundredReasonsAction(input: unknown): Promise<GiftActionResult<HundredReasonsData>> {
+  const parsed = saveHundredReasonsSchema.safeParse(input);
+  if (!parsed.success) {
+    return { success: false, error: parsed.error.issues[0]?.message ?? "Something looks off." };
+  }
+
+  const existing = await getHundredReasonsByEditToken(parsed.data.editToken);
+  if (!existing) {
+    return { success: false, error: "This edit link has expired." };
+  }
+
+  const gift = await updateHundredReasons(parsed.data.editToken, {
+    title: parsed.data.title,
+    reasons: parsed.data.reasons,
+    finalMessage: parsed.data.finalMessage,
+  });
+
+  revalidatePath(`/gifts/100-reasons/edit/${gift.editToken}`);
+  revalidatePath(`/gifts/100-reasons/${gift.id}`);
+
+  return { success: true, data: gift };
 }

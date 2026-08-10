@@ -3,6 +3,7 @@
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { safeRedirectPath } from "@/lib/safe-redirect";
 import {
   requestPasswordResetSchema,
   signInSchema,
@@ -46,7 +47,7 @@ export async function signInWithGoogleAction(next: string = "/") {
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: "google",
     options: {
-      redirectTo: `${origin}/auth/callback?next=${encodeURIComponent(next)}`,
+      redirectTo: `${origin}/auth/callback?next=${encodeURIComponent(safeRedirectPath(next))}`,
     },
   });
 
@@ -78,7 +79,7 @@ export async function signInWithPasswordAction(_prev: AuthFormState, formData: F
     return { status: "error", error: humanizeAuthError(error.message), values };
   }
 
-  redirect(String(formData.get("next") || "/"));
+  redirect(safeRedirectPath(String(formData.get("next") || "")));
 }
 
 export async function signUpWithPasswordAction(_prev: AuthFormState, formData: FormData): Promise<AuthFormState> {
@@ -92,13 +93,18 @@ export async function signUpWithPasswordAction(_prev: AuthFormState, formData: F
   }
 
   const origin = await getOrigin();
+  const next = safeRedirectPath(String(formData.get("next") || ""));
   const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase.auth.signUp({
     email: parsed.data.email,
     password: parsed.data.password,
     options: {
       data: { full_name: parsed.data.name },
-      emailRedirectTo: `${origin}/auth/callback`,
+      // Where the confirmation link should land once verified — the email
+      // template threads this through as {{ .RedirectTo }}, appended to
+      // the /auth/confirm link it builds. Not /auth/callback: that route
+      // only understands the OAuth PKCE `code` flow, not this one.
+      emailRedirectTo: `${origin}${next}`,
     },
   });
 
@@ -116,7 +122,7 @@ export async function signUpWithPasswordAction(_prev: AuthFormState, formData: F
     };
   }
 
-  redirect(String(formData.get("next") || "/"));
+  redirect(next);
 }
 
 export async function requestPasswordResetAction(_prev: AuthFormState, formData: FormData): Promise<AuthFormState> {
@@ -129,7 +135,10 @@ export async function requestPasswordResetAction(_prev: AuthFormState, formData:
   const origin = await getOrigin();
   const supabase = await createSupabaseServerClient();
   await supabase.auth.resetPasswordForEmail(parsed.data.email, {
-    redirectTo: `${origin}/auth/callback?next=${encodeURIComponent("/reset-password")}`,
+    // Same reasoning as signup's emailRedirectTo — this becomes
+    // {{ .RedirectTo }} in the "Reset Password" email template, which
+    // needs to link to /auth/confirm, not /auth/callback.
+    redirectTo: `${origin}/reset-password`,
   });
 
   // Same message whether or not the email is registered — confirming

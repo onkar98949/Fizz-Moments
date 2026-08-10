@@ -251,3 +251,112 @@ model Feedback {
 
   @@map("feedback")
 }
+
+/// The seventh Romantic Interactive Gift — a sealed letter, built around
+/// the physical metaphor of opening a real envelope (3D flap, sliding
+/// paper). `style` picks the envelope's visual theme; everything else is
+/// a single letter's worth of content, no collection needed here.
+model SecretEnvelope {
+  id            String   @id @default(cuid())
+  editToken     String   @unique @default(cuid()) @map("edit_token")
+  userId        String?  @map("user_id")
+  title         String
+  style         String   @default("classic")
+  recipientName String   @map("recipient_name")
+  letterTitle   String   @map("letter_title")
+  message       String
+  senderName    String   @map("sender_name")
+  photoUrl      String?  @map("photo_url")
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  @@index([userId])
+  @@map("secret_envelopes")
+}
+
+/// The eighth gift — a fortune cookie. `fortunes` is always an array (even
+/// a single fortune is a one-item array); the player always picks
+/// randomly from it, so "one fortune" and "random from a collection" are
+/// the same code path, not two modes to build separately.
+model FortuneCookie {
+  id            String   @id @default(cuid())
+  editToken     String   @unique @default(cuid()) @map("edit_token")
+  userId        String?  @map("user_id")
+  title         String
+  recipientName String   @map("recipient_name")
+  fortunes      Json
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  @@index([userId])
+  @@map("fortune_cookies")
+}
+
+/// The ninth gift — relationship trivia with a per-question personal
+/// reaction (not just a result screen), which is what actually sets it
+/// apart from RelationshipQuiz. `resultTiers` mirrors that model's proven
+/// score-range-to-message shape.
+model MemoryQuiz {
+  id           String   @id @default(cuid())
+  editToken    String   @unique @default(cuid()) @map("edit_token")
+  userId       String?  @map("user_id")
+  title        String
+  questions    Json
+  resultTiers  Json     @map("result_tiers")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  @@index([userId])
+  @@map("memory_quizzes")
+}
+
+/// The tenth gift — a collection of "open when" letters. Each letter
+/// carries its own `opened` flag, flipped by a public action (no edit
+/// token) the same way CouponBook's redeem does, so the "3/8 opened"
+/// collectible feeling survives a page reload.
+model OpenWhenCollection {
+  id        String   @id @default(cuid())
+  editToken String   @unique @default(cuid()) @map("edit_token")
+  userId    String?  @map("user_id")
+  title     String
+  letters   Json
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([userId])
+  @@map("open_when_collections")
+}
+
+/// The eleventh gift — a randomized date-idea picker. `ideas` holds the
+/// creator's curated list; the player does the actual randomization
+/// client-side (spin/cycle animation), nothing to persist per-spin.
+model DateGenerator {
+  id        String   @id @default(cuid())
+  editToken String   @unique @default(cuid()) @map("edit_token")
+  userId    String?  @map("user_id")
+  title     String
+  ideas     Json
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@index([userId])
+  @@map("date_generators")
+}
+
+/// The twelfth gift — a one-at-a-time reveal of up to 100 reasons.
+/// `reasons` is an ordered array; the halfway and final-reason moments are
+/// computed from its length at render time, not authored per-index, so
+/// they work the same whether there are 10 reasons or 100.
+model HundredReasons {
+  id           String   @id @default(cuid())
+  editToken    String   @unique @default(cuid()) @map("edit_token")
+  userId       String?  @map("user_id")
+  title        String
+  reasons      Json
+  finalMessage String?  @map("final_message")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  @@index([userId])
+  @@map("hundred_reasons")
+}

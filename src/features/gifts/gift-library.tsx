@@ -14,6 +14,12 @@ import {
   createBlankLoveWrappedAction,
   createBlankCouponBookAction,
   createBlankRelationshipQuizAction,
+  createBlankSecretEnvelopeAction,
+  createBlankFortuneCookieAction,
+  createBlankMemoryQuizAction,
+  createBlankOpenWhenCollectionAction,
+  createBlankDateGeneratorAction,
+  createBlankHundredReasonsAction,
 } from "@/actions/gift-actions";
 import { isNextRedirectError } from "@/lib/utils";
 import { staggerContainer, staggerItem, viewportOnce } from "@/lib/motion";
@@ -27,6 +33,12 @@ const CREATE_ACTIONS: Record<string, () => Promise<never>> = {
   "love-wrapped": createBlankLoveWrappedAction,
   "coupon-book": createBlankCouponBookAction,
   "how-well": createBlankRelationshipQuizAction,
+  "secret-envelope": createBlankSecretEnvelopeAction,
+  "fortune-cookie": createBlankFortuneCookieAction,
+  "memory-quiz": createBlankMemoryQuizAction,
+  "open-when": createBlankOpenWhenCollectionAction,
+  "date-generator": createBlankDateGeneratorAction,
+  "100-reasons": createBlankHundredReasonsAction,
 };
 
 export function GiftLibrary() {

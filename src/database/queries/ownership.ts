@@ -36,6 +36,42 @@ const KIND_META: Record<DashboardKind, { label: string; emoji: string; editBase:
     editBase: "/gifts/how-well-do-you-know-me/edit",
     viewBase: "/gifts/how-well-do-you-know-me",
   },
+  "secret-envelope": {
+    label: "Secret Envelope",
+    emoji: "💌",
+    editBase: "/gifts/secret-envelope/edit",
+    viewBase: "/gifts/secret-envelope",
+  },
+  "fortune-cookie": {
+    label: "Fortune Cookie",
+    emoji: "🥠",
+    editBase: "/gifts/fortune-cookie/edit",
+    viewBase: "/gifts/fortune-cookie",
+  },
+  "memory-quiz": {
+    label: "Memory Quiz",
+    emoji: "🧠",
+    editBase: "/gifts/memory-quiz/edit",
+    viewBase: "/gifts/memory-quiz",
+  },
+  "open-when": {
+    label: "Open When",
+    emoji: "✉️",
+    editBase: "/gifts/open-when/edit",
+    viewBase: "/gifts/open-when",
+  },
+  "date-generator": {
+    label: "Date Generator",
+    emoji: "🎲",
+    editBase: "/gifts/date-generator/edit",
+    viewBase: "/gifts/date-generator",
+  },
+  "100-reasons": {
+    label: "100 Reasons",
+    emoji: "💚",
+    editBase: "/gifts/100-reasons/edit",
+    viewBase: "/gifts/100-reasons",
+  },
 };
 
 type OwnableRow = { id: string; editToken: string; title: string; updatedAt: Date };
@@ -87,6 +123,24 @@ export async function claimOwnershipIfUnowned(kind: DashboardKind, id: string, u
     case "how-well":
       await prisma.relationshipQuiz.updateMany({ where, data });
       return;
+    case "secret-envelope":
+      await prisma.secretEnvelope.updateMany({ where, data });
+      return;
+    case "fortune-cookie":
+      await prisma.fortuneCookie.updateMany({ where, data });
+      return;
+    case "memory-quiz":
+      await prisma.memoryQuiz.updateMany({ where, data });
+      return;
+    case "open-when":
+      await prisma.openWhenCollection.updateMany({ where, data });
+      return;
+    case "date-generator":
+      await prisma.dateGenerator.updateMany({ where, data });
+      return;
+    case "100-reasons":
+      await prisma.hundredReasons.updateMany({ where, data });
+      return;
   }
 }
 
@@ -96,17 +150,37 @@ export async function getUserCreations(userId: string): Promise<DashboardItem[]>
   const select = { id: true, editToken: true, title: true, updatedAt: true } as const;
   const where = { userId };
 
-  const [stories, templates, scratchCards, treasureHunts, giftBoxes, loveWrapped, couponBooks, quizzes] =
-    await Promise.all([
-      prisma.story.findMany({ where, select }),
-      prisma.templateProject.findMany({ where, select }),
-      prisma.scratchCardGift.findMany({ where, select }),
-      prisma.treasureHunt.findMany({ where, select }),
-      prisma.giftBox.findMany({ where, select }),
-      prisma.loveWrapped.findMany({ where, select }),
-      prisma.couponBook.findMany({ where, select }),
-      prisma.relationshipQuiz.findMany({ where, select }),
-    ]);
+  const [
+    stories,
+    templates,
+    scratchCards,
+    treasureHunts,
+    giftBoxes,
+    loveWrapped,
+    couponBooks,
+    quizzes,
+    secretEnvelopes,
+    fortuneCookies,
+    memoryQuizzes,
+    openWhenCollections,
+    dateGenerators,
+    hundredReasons,
+  ] = await Promise.all([
+    prisma.story.findMany({ where, select }),
+    prisma.templateProject.findMany({ where, select }),
+    prisma.scratchCardGift.findMany({ where, select }),
+    prisma.treasureHunt.findMany({ where, select }),
+    prisma.giftBox.findMany({ where, select }),
+    prisma.loveWrapped.findMany({ where, select }),
+    prisma.couponBook.findMany({ where, select }),
+    prisma.relationshipQuiz.findMany({ where, select }),
+    prisma.secretEnvelope.findMany({ where, select }),
+    prisma.fortuneCookie.findMany({ where, select }),
+    prisma.memoryQuiz.findMany({ where, select }),
+    prisma.openWhenCollection.findMany({ where, select }),
+    prisma.dateGenerator.findMany({ where, select }),
+    prisma.hundredReasons.findMany({ where, select }),
+  ]);
 
   const items: DashboardItem[] = [
     ...stories.map((r) => toDashboardItem("story", r)),
@@ -117,6 +191,12 @@ export async function getUserCreations(userId: string): Promise<DashboardItem[]>
     ...loveWrapped.map((r) => toDashboardItem("love-wrapped", r)),
     ...couponBooks.map((r) => toDashboardItem("coupon-book", r)),
     ...quizzes.map((r) => toDashboardItem("how-well", r)),
+    ...secretEnvelopes.map((r) => toDashboardItem("secret-envelope", r)),
+    ...fortuneCookies.map((r) => toDashboardItem("fortune-cookie", r)),
+    ...memoryQuizzes.map((r) => toDashboardItem("memory-quiz", r)),
+    ...openWhenCollections.map((r) => toDashboardItem("open-when", r)),
+    ...dateGenerators.map((r) => toDashboardItem("date-generator", r)),
+    ...hundredReasons.map((r) => toDashboardItem("100-reasons", r)),
   ];
 
   return items.sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime());

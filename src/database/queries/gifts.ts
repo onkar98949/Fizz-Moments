@@ -8,23 +8,54 @@ import {
   couponsArraySchema,
   quizQuestionsArraySchema,
   quizResultTiersArraySchema,
+  fortunesArraySchema,
+  memoryQuizQuestionsArraySchema,
+  memoryQuizResultTiersArraySchema,
+  openWhenLettersArraySchema,
+  dateIdeasArraySchema,
+  loveReasonsArraySchema,
 } from "@/schemas/gifts";
 import type {
   Coupon,
   CouponBookData,
+  DateGeneratorData,
+  DateIdea,
+  Fortune,
+  FortuneCookieData,
   GiftBoxData,
+  HundredReasonsData,
+  LoveReason,
   LoveWrappedData,
+  MemoryQuizData,
+  MemoryQuizQuestion,
+  MemoryQuizResultTier,
+  OpenWhenCollectionData,
+  OpenWhenLetter,
   QuizQuestion,
   QuizResultTier,
   RelationshipQuizData,
   ScratchCard,
   ScratchCardGiftData,
+  SecretEnvelopeData,
   TreasureHuntClue,
   TreasureHuntData,
   WrappedMoment,
   WrappedStat,
 } from "@/types/gifts";
-import type { CouponBook, GiftBox, LoveWrapped, RelationshipQuiz, ScratchCardGift, TreasureHunt } from "@prisma/client";
+import type {
+  CouponBook,
+  DateGenerator,
+  FortuneCookie,
+  GiftBox,
+  HundredReasons,
+  LoveWrapped,
+  MemoryQuiz,
+  OpenWhenCollection,
+  RelationshipQuiz,
+  ScratchCardGift,
+  SecretEnvelope,
+  TreasureHunt,
+} from "@prisma/client";
 
 function parseCards(raw: unknown): ScratchCard[] {
   return scratchCardsArraySchema.parse(raw) as ScratchCard[];
@@ -400,4 +431,359 @@ export async function updateRelationshipQuiz(
     data: { title: data.title, questions: data.questions, resultTiers: data.resultTiers },
   });
   return toRelationshipQuizData(row);
+}
+
+// ---------------------------------------------------------------------------
+// Second wave
+// ---------------------------------------------------------------------------
+
+function toSecretEnvelopeData(row: SecretEnvelope): SecretEnvelopeData {
+  return {
+    id: row.id,
+    editToken: row.editToken,
+    userId: row.userId,
+    title: row.title,
+    style: row.style as SecretEnvelopeData["style"],
+    recipientName: row.recipientName,
+    letterTitle: row.letterTitle,
+    message: row.message,
+    senderName: row.senderName,
+    photoUrl: row.photoUrl,
+    createdAt: row.createdAt.toISOString(),
+    updatedAt: row.updatedAt.toISOString(),
+  };
+}
+
+export async function createBlankSecretEnvelope(userId: string | null = null): Promise<SecretEnvelopeData> {
+  const row = await prisma.secretEnvelope.create({
+    data: {
+      title: "A Letter For You",
+      style: "classic",
+      recipientName: "",
+      letterTitle: "A Letter For You",
+      message: "Every moment with you feels like a page from my favorite story.",
+      senderName: "",
+      userId,
+    },
+  });
+  return toSecretEnvelopeData(row);
+}
+
+export async function getSecretEnvelopeById(id: string): Promise<SecretEnvelopeData | null> {
+  const row = await prisma.secretEnvelope.findUnique({ where: { id } });
+  return row ? toSecretEnvelopeData(row) : null;
+}
+
+export async function getSecretEnvelopeByEditToken(editToken: string): Promise<SecretEnvelopeData | null> {
+  const row = await prisma.secretEnvelope.findUnique({ where: { editToken } });
+  return row ? toSecretEnvelopeData(row) : null;
+}
+
+export async function updateSecretEnvelope(
+  editToken: string,
+  data: {
+    title: string;
+    style: SecretEnvelopeData["style"];
+    recipientName: string;
+    letterTitle: string;
+    message: string;
+    senderName: string;
+    photoUrl: string | null;
+  },
+): Promise<SecretEnvelopeData> {
+  const row = await prisma.secretEnvelope.update({ where: { editToken }, data });
+  return toSecretEnvelopeData(row);
+}
+
+function toFortuneCookieData(row: FortuneCookie): FortuneCookieData {
+  return {
+    id: row.id,
+    editToken: row.editToken,
+    userId: row.userId,
+    title: row.title,
+    recipientName: row.recipientName,
+    fortunes: fortunesArraySchema.parse(row.fortunes) as Fortune[],
+    createdAt: row.createdAt.toISOString(),
+    updatedAt: row.updatedAt.toISOString(),
+  };
+}
+
+function blankFortunes(): Fortune[] {
+  return [{ id: crypto.randomUUID(), text: "You're going to fall in love with this person all over again this weekend." }];
+}
+
+export async function createBlankFortuneCookie(userId: string | null = null): Promise<FortuneCookieData> {
+  const row = await prisma.fortuneCookie.create({
+    data: { title: "Your Fortune", recipientName: "", fortunes: blankFortunes(), userId },
+  });
+  return toFortuneCookieData(row);
+}
+
+export async function getFortuneCookieById(id: string): Promise<FortuneCookieData | null> {
+  const row = await prisma.fortuneCookie.findUnique({ where: { id } });
+  return row ? toFortuneCookieData(row) : null;
+}
+
+export async function getFortuneCookieByEditToken(editToken: string): Promise<FortuneCookieData | null> {
+  const row = await prisma.fortuneCookie.findUnique({ where: { editToken } });
+  return row ? toFortuneCookieData(row) : null;
+}
+
+export async function updateFortuneCookie(
+  editToken: string,
+  data: { title: string; recipientName: string; fortunes: Fortune[] },
+): Promise<FortuneCookieData> {
+  const row = await prisma.fortuneCookie.update({ where: { editToken }, data });
+  return toFortuneCookieData(row);
+}
+
+function toMemoryQuizData(row: MemoryQuiz): MemoryQuizData {
+  return {
+    id: row.id,
+    editToken: row.editToken,
+    userId: row.userId,
+    title: row.title,
+    questions: memoryQuizQuestionsArraySchema.parse(row.questions) as MemoryQuizQuestion[],
+    resultTiers: memoryQuizResultTiersArraySchema.parse(row.resultTiers) as MemoryQuizResultTier[],
+    createdAt: row.createdAt.toISOString(),
+    updatedAt: row.updatedAt.toISOString(),
+  };
+}
+
+function blankMemoryQuizQuestions(): MemoryQuizQuestion[] {
+  function opts(labels: string[]) {
+    return labels.map((label) => ({ id: crypto.randomUUID(), label }));
+  }
+  const q1Options = opts(["Cafe", "Park", "Cinema", "Restaurant"]);
+  const q2Options = opts(["A rom-com", "An action movie", "A horror movie", "A documentary"]);
+  const q3Options = opts(["Me", "You"]);
+  return [
+    {
+      id: crypto.randomUUID(),
+      prompt: "Where did we have our first date?",
+      options: q1Options,
+      correctOptionId: q1Options[1].id,
+      correctReaction: "Okayyy you actually remember 😭❤️",
+      wrongReaction: "HOW do you not remember this?! 😂",
+    },
+    {
+      id: crypto.randomUUID(),
+      prompt: "What was the first movie we watched together?",
+      options: q2Options,
+      correctOptionId: q2Options[0].id,
+      correctReaction: "Okayyy you actually remember 😭❤️",
+      wrongReaction: "HOW do you not remember this?! 😂",
+    },
+    {
+      id: crypto.randomUUID(),
+      prompt: "Who said \"I love you\" first?",
+      options: q3Options,
+      correctOptionId: q3Options[0].id,
+      correctReaction: "Okayyy you actually remember 😭❤️",
+      wrongReaction: "HOW do you not remember this?! 😂",
+    },
+  ];
+}
+
+function blankMemoryQuizResultTiers(): MemoryQuizResultTier[] {
+  return [
+    { id: crypto.randomUUID(), minPercent: 0, title: "We need more memories", message: "Okay... we need to make more memories 😂" },
+    { id: crypto.randomUUID(), minPercent: 70, title: "You know us so well", message: "You officially know us better than I expected." },
+  ];
+}
+
+export async function createBlankMemoryQuiz(userId: string | null = null): Promise<MemoryQuizData> {
+  const row = await prisma.memoryQuiz.create({
+    data: {
+      title: "How Well Do You Remember Us?",
+      questions: blankMemoryQuizQuestions(),
+      resultTiers: blankMemoryQuizResultTiers(),
+      userId,
+    },
+  });
+  return toMemoryQuizData(row);
+}
+
+export async function getMemoryQuizById(id: string): Promise<MemoryQuizData | null> {
+  const row = await prisma.memoryQuiz.findUnique({ where: { id } });
+  return row ? toMemoryQuizData(row) : null;
+}
+
+export async function getMemoryQuizByEditToken(editToken: string): Promise<MemoryQuizData | null> {
+  const row = await prisma.memoryQuiz.findUnique({ where: { editToken } });
+  return row ? toMemoryQuizData(row) : null;
+}
+
+export async function updateMemoryQuiz(
+  editToken: string,
+  data: { title: string; questions: MemoryQuizQuestion[]; resultTiers: MemoryQuizResultTier[] },
+): Promise<MemoryQuizData> {
+  const row = await prisma.memoryQuiz.update({
+    where: { editToken },
+    data: { title: data.title, questions: data.questions, resultTiers: data.resultTiers },
+  });
+  return toMemoryQuizData(row);
+}
+
+function toOpenWhenCollectionData(row: OpenWhenCollection): OpenWhenCollectionData {
+  return {
+    id: row.id,
+    editToken: row.editToken,
+    userId: row.userId,
+    title: row.title,
+    letters: openWhenLettersArraySchema.parse(row.letters) as OpenWhenLetter[],
+    createdAt: row.createdAt.toISOString(),
+    updatedAt: row.updatedAt.toISOString(),
+  };
+}
+
+function blankOpenWhenLetters(): OpenWhenLetter[] {
+  return [
+    { id: crypto.randomUUID(), label: "you miss me", emoji: "💌", message: "I know I'm not there right now, but I'm always just a call away.", photoUrl: null, opened: false },
+    { id: crypto.randomUUID(), label: "you're having a bad day", emoji: "🌧️", message: "Bad days don't last. And I'm always in your corner.", photoUrl: null, opened: false },
+    { id: crypto.randomUUID(), label: "you need a hug", emoji: "🥺", message: "Consider this your hug from me, wherever you are.", photoUrl: null, opened: false },
+  ];
+}
+
+export async function createBlankOpenWhenCollection(userId: string | null = null): Promise<OpenWhenCollectionData> {
+  const row = await prisma.openWhenCollection.create({
+    data: { title: "Letters From Me", letters: blankOpenWhenLetters(), userId },
+  });
+  return toOpenWhenCollectionData(row);
+}
+
+export async function getOpenWhenCollectionById(id: string): Promise<OpenWhenCollectionData | null> {
+  const row = await prisma.openWhenCollection.findUnique({ where: { id } });
+  return row ? toOpenWhenCollectionData(row) : null;
+}
+
+export async function getOpenWhenCollectionByEditToken(editToken: string): Promise<OpenWhenCollectionData | null> {
+  const row = await prisma.openWhenCollection.findUnique({ where: { editToken } });
+  return row ? toOpenWhenCollectionData(row) : null;
+}
+
+export async function updateOpenWhenCollection(
+  editToken: string,
+  data: { title: string; letters: OpenWhenLetter[] },
+): Promise<OpenWhenCollectionData> {
+  const row = await prisma.openWhenCollection.update({ where: { editToken }, data });
+  return toOpenWhenCollectionData(row);
+}
+
+/** Public mutation (no edit token) — the recipient opens a letter and that
+ *  state persists, same pattern as CouponBook's redeem. */
+export async function openLetter(id: string, letterId: string): Promise<OpenWhenCollectionData | null> {
+  const row = await prisma.openWhenCollection.findUnique({ where: { id } });
+  if (!row) return null;
+
+  const letters = openWhenLettersArraySchema.parse(row.letters) as OpenWhenLetter[];
+  if (!letters.some((l) => l.id === letterId)) return null;
+
+  const nextLetters = letters.map((l) => (l.id === letterId ? { ...l, opened: true } : l));
+  const updated = await prisma.openWhenCollection.update({ where: { id }, data: { letters: nextLetters } });
+  return toOpenWhenCollectionData(updated);
+}
+
+function toDateGeneratorData(row: DateGenerator): DateGeneratorData {
+  return {
+    id: row.id,
+    editToken: row.editToken,
+    userId: row.userId,
+    title: row.title,
+    ideas: dateIdeasArraySchema.parse(row.ideas) as DateIdea[],
+    createdAt: row.createdAt.toISOString(),
+    updatedAt: row.updatedAt.toISOString(),
+  };
+}
+
+function blankDateIdeas(): DateIdea[] {
+  return [
+    { id: crypto.randomUUID(), text: "Make breakfast together.", budget: "Free", difficulty: "Easy", timeEstimate: "~30 min" },
+    { id: crypto.randomUUID(), text: "Go for a midnight drive.", budget: "Free", difficulty: "Easy", timeEstimate: "~1 hour" },
+    { id: crypto.randomUUID(), text: "Recreate your first date.", budget: "$$", difficulty: "Medium", timeEstimate: "~2 hours" },
+  ];
+}
+
+export async function createBlankDateGenerator(userId: string | null = null): Promise<DateGeneratorData> {
+  const row = await prisma.dateGenerator.create({
+    data: { title: "What Should We Do Tonight?", ideas: blankDateIdeas(), userId },
+  });
+  return toDateGeneratorData(row);
+}
+
+export async function getDateGeneratorById(id: string): Promise<DateGeneratorData | null> {
+  const row = await prisma.dateGenerator.findUnique({ where: { id } });
+  return row ? toDateGeneratorData(row) : null;
+}
+
+export async function getDateGeneratorByEditToken(editToken: string): Promise<DateGeneratorData | null> {
+  const row = await prisma.dateGenerator.findUnique({ where: { editToken } });
+  return row ? toDateGeneratorData(row) : null;
+}
+
+export async function updateDateGenerator(
+  editToken: string,
+  data: { title: string; ideas: DateIdea[] },
+): Promise<DateGeneratorData> {
+  const row = await prisma.dateGenerator.update({ where: { editToken }, data });
+  return toDateGeneratorData(row);
+}
+
+function toHundredReasonsData(row: HundredReasons): HundredReasonsData {
+  return {
+    id: row.id,
+    editToken: row.editToken,
+    userId: row.userId,
+    title: row.title,
+    reasons: loveReasonsArraySchema.parse(row.reasons) as LoveReason[],
+    finalMessage: row.finalMessage,
+    createdAt: row.createdAt.toISOString(),
+    updatedAt: row.updatedAt.toISOString(),
+  };
+}
+
+function blankLoveReasons(): LoveReason[] {
+  const texts = [
+    "Your laugh.",
+    "The way you get excited about little things.",
+    "You always know when something is wrong.",
+    "Your terrible jokes.",
+    "The way you hold my hand.",
+    "You make ordinary days feel special.",
+    "Your terrible puns.",
+    "How you remember the little things.",
+    "The way you say my name.",
+    "You still choose me every day.",
+  ];
+  return texts.map((text) => ({ id: crypto.randomUUID(), text, photoUrl: null }));
+}
+
+export async function createBlankHundredReasons(userId: string | null = null): Promise<HundredReasonsData> {
+  const row = await prisma.hundredReasons.create({
+    data: {
+      title: "100 Reasons I Love You",
+      reasons: blankLoveReasons(),
+      finalMessage: "But if I had to choose one reason... You.",
+      userId,
+    },
+  });
+  return toHundredReasonsData(row);
+}
+
+export async function getHundredReasonsById(id: string): Promise<HundredReasonsData | null> {
+  const row = await prisma.hundredReasons.findUnique({ where: { id } });
+  return row ? toHundredReasonsData(row) : null;
+}
+
+export async function getHundredReasonsByEditToken(editToken: string): Promise<HundredReasonsData | null> {
+  const row = await prisma.hundredReasons.findUnique({ where: { editToken } });
+  return row ? toHundredReasonsData(row) : null;
+}
+
+export async function updateHundredReasons(
+  editToken: string,
+  data: { title: string; reasons: LoveReason[]; finalMessage: string | null },
+): Promise<HundredReasonsData> {
+  const row = await prisma.hundredReasons.update({ where: { editToken }, data });
+  return toHundredReasonsData(row);
 }

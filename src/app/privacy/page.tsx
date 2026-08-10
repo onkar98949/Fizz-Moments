@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   description: "How FizzMoments collects, uses, and protects the content you create.",
 };
 
-const CONTACT_EMAIL = "hello@fizzmoments.app";
+const CONTACT_EMAIL = "support@fizzmoments.com";
 
 export default function PrivacyPolicyPage() {
   return (

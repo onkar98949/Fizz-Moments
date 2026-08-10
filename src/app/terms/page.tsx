@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   description: "The terms that govern using FizzMoments to create and share stories and gifts.",
 };
 
-const CONTACT_EMAIL = "hello@fizzmoments.app";
+const CONTACT_EMAIL = "support@fizzmoments.com";
 
 export default function TermsPage() {
   return (

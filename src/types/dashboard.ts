@@ -6,7 +6,13 @@ export type DashboardKind =
   | "gift-box"
   | "love-wrapped"
   | "coupon-book"
-  | "how-well";
+  | "how-well"
+  | "secret-envelope"
+  | "fortune-cookie"
+  | "memory-quiz"
+  | "open-when"
+  | "date-generator"
+  | "100-reasons";
 
 export type DashboardItem = {
   kind: DashboardKind;
