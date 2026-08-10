@@ -19,6 +19,8 @@ const NAV_LINKS = [
   { href: "/contact", label: "Contact" },
 ];
 
+const CREATIONS_LINK = { href: "/dashboard", label: "My Creations" };
+
 const EASE = [0.16, 1, 0.3, 1] as const;
 
 /** A plain, full-width sticky bar — not a floating pill. Transparent over
@@ -53,6 +55,8 @@ export function NavbarClient({ user }: { user: AuthUser | null }) {
     };
   }, [menuOpen]);
 
+  const navLinks = user ? [...NAV_LINKS, CREATIONS_LINK] : NAV_LINKS;
+
   return (
     <header className="sticky top-0 z-40 w-full">
       <motion.div
@@ -70,7 +74,7 @@ export function NavbarClient({ user }: { user: AuthUser | null }) {
           </Link>
 
           <nav onMouseLeave={() => setHovered(null)} className="hidden items-center gap-8 sm:flex">
-            {NAV_LINKS.map((link) => {
+            {navLinks.map((link) => {
               const isActive = pathname === link.href;
               const isIndicated = hovered ? hovered === link.href : isActive;
               return (
@@ -138,7 +142,7 @@ export function NavbarClient({ user }: { user: AuthUser | null }) {
             className="border-border bg-background overflow-hidden border-b sm:hidden"
           >
             <nav className="mx-auto flex max-w-6xl flex-col gap-1 px-6 py-4">
-              {NAV_LINKS.map((link, index) => (
+              {navLinks.map((link, index) => (
                 <motion.div
                   key={link.href}
                   initial={{ opacity: 0, x: -8 }}

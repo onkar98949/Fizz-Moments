@@ -2,9 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
-import { LayoutGrid, LogOut } from "lucide-react";
+import { LogOut } from "lucide-react";
 import { signOutAction } from "@/actions/auth-actions";
 import type { AuthUser } from "./types";
 
@@ -59,14 +58,6 @@ export function UserMenu({ user }: { user: AuthUser }) {
               <span className="text-muted-foreground truncate text-xs">{user.email}</span>
             </div>
             <div className="bg-border my-1.5 h-px" />
-            <Link
-              href="/dashboard"
-              onClick={() => setOpen(false)}
-              className="text-foreground/80 hover:bg-secondary flex w-full items-center gap-2 rounded-lg px-2.5 py-2 text-left text-sm font-medium transition-colors duration-200"
-            >
-              <LayoutGrid className="size-3.5" strokeWidth={1.75} />
-              My Creations
-            </Link>
             <form action={signOutAction}>
               <button
                 type="submit"
