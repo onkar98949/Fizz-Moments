@@ -4,13 +4,15 @@ import { claimOwnershipIfUnowned } from "@/database/queries/ownership";
 import { getCurrentUserId } from "@/lib/supabase/server";
 import { InvalidLink } from "@/components/shared/invalid-link";
 import { SecretEnvelopeEditor } from "@/features/gifts/secret-envelope/secret-envelope-editor";
+import { NOINDEX_ROBOTS } from "@/lib/seo";
 
 type EditPageProps = {
   params: Promise<{ token: string }>;
 };
 
 export const metadata: Metadata = {
-  title: "Edit your letter — FizzMoments",
+  title: "Edit your letter",
+  robots: NOINDEX_ROBOTS,
 };
 
 export default async function SecretEnvelopeEditPage({ params }: EditPageProps) {

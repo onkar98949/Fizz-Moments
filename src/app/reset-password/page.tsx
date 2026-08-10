@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import { AuthShell } from "@/features/auth/auth-shell";
 import { ResetPasswordForm } from "@/features/auth/reset-password-form";
+import { NOINDEX_ROBOTS } from "@/lib/seo";
 
 export const metadata: Metadata = {
-  title: "Set a new password — FizzMoments",
+  title: "Set a new password",
   description: "Choose a new password for your FizzMoments account.",
+  robots: NOINDEX_ROBOTS,
 };
 
 export default function ResetPasswordPage() {

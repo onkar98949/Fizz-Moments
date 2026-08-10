@@ -5,10 +5,12 @@ import { Footer } from "@/components/shared/footer";
 import { getCurrentUserId } from "@/lib/supabase/server";
 import { getUserCreations } from "@/database/queries/ownership";
 import { DashboardGrid } from "@/features/dashboard/dashboard-grid";
+import { NOINDEX_ROBOTS } from "@/lib/seo";
 
 export const metadata: Metadata = {
-  title: "My Creations — FizzMoments",
+  title: "My Creations",
   description: "Everything you've made with FizzMoments, in one place.",
+  robots: NOINDEX_ROBOTS,
 };
 
 export default async function DashboardPage() {

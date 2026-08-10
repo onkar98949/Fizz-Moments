@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getTemplateProjectById } from "@/database/queries/templates";
 import { InvalidLink } from "@/components/shared/invalid-link";
 import { TemplatePlayer } from "@/components/shared/template-player";
+import { NOINDEX_ROBOTS, pageSeo } from "@/lib/seo";
 
 type StoryPageProps = {
   params: Promise<{ id: string }>;
@@ -10,7 +11,17 @@ type StoryPageProps = {
 export async function generateMetadata({ params }: StoryPageProps): Promise<Metadata> {
   const { id } = await params;
   const project = await getTemplateProjectById(id);
-  return { title: project ? `${project.title} — FizzMoments` : "FizzMoments" };
+
+  if (!project) {
+    return { robots: NOINDEX_ROBOTS };
+  }
+
+  return pageSeo({
+    title: project.title,
+    description: "A personal surprise made with FizzMoments.",
+    path: `/templates/story/${id}`,
+    noindex: true,
+  });
 }
 
 export default async function TemplateStoryPage({ params }: StoryPageProps) {

@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import { LegalPage, LegalSection } from "@/components/shared/legal-page";
+import { pageSeo } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "Terms & Conditions — FizzMoments",
+export const metadata: Metadata = pageSeo({
+  title: "Terms & Conditions",
   description: "The terms that govern using FizzMoments to create and share stories and gifts.",
-};
+  path: "/terms",
+});
 
 const CONTACT_EMAIL = "support@fizzmoments.com";
 

@@ -4,13 +4,15 @@ import { claimOwnershipIfUnowned } from "@/database/queries/ownership";
 import { getCurrentUserId } from "@/lib/supabase/server";
 import { InvalidLink } from "@/components/shared/invalid-link";
 import { StoryCanvas } from "@/features/story-canvas/story-canvas";
+import { NOINDEX_ROBOTS } from "@/lib/seo";
 
 type EditPageProps = {
   params: Promise<{ token: string }>;
 };
 
 export const metadata: Metadata = {
-  title: "Story Canvas — FizzMoments",
+  title: "Story Canvas",
+  robots: NOINDEX_ROBOTS,
 };
 
 export default async function EditPage({ params }: EditPageProps) {

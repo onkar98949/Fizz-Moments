@@ -4,13 +4,15 @@ import { claimOwnershipIfUnowned } from "@/database/queries/ownership";
 import { getCurrentUserId } from "@/lib/supabase/server";
 import { InvalidLink } from "@/components/shared/invalid-link";
 import { GiftBoxEditor } from "@/features/gifts/gift-box/gift-box-editor";
+import { NOINDEX_ROBOTS } from "@/lib/seo";
 
 type EditPageProps = {
   params: Promise<{ token: string }>;
 };
 
 export const metadata: Metadata = {
-  title: "Edit your gift box — FizzMoments",
+  title: "Edit your gift box",
+  robots: NOINDEX_ROBOTS,
 };
 
 export default async function GiftBoxEditPage({ params }: EditPageProps) {

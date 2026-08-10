@@ -4,13 +4,15 @@ import { claimOwnershipIfUnowned } from "@/database/queries/ownership";
 import { getCurrentUserId } from "@/lib/supabase/server";
 import { InvalidLink } from "@/components/shared/invalid-link";
 import { CouponBookEditor } from "@/features/gifts/coupon-book/coupon-book-editor";
+import { NOINDEX_ROBOTS } from "@/lib/seo";
 
 type EditPageProps = {
   params: Promise<{ token: string }>;
 };
 
 export const metadata: Metadata = {
-  title: "Edit your coupon book — FizzMoments",
+  title: "Edit your coupon book",
+  robots: NOINDEX_ROBOTS,
 };
 
 export default async function CouponBookEditPage({ params }: EditPageProps) {

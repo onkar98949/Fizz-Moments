@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getDateGeneratorById } from "@/database/queries/gifts";
 import { InvalidLink } from "@/components/shared/invalid-link";
 import { DateGeneratorPlayer } from "@/features/gifts/date-generator/date-generator-player";
+import { NOINDEX_ROBOTS, pageSeo } from "@/lib/seo";
 
 type GiftPageProps = {
   params: Promise<{ id: string }>;
@@ -10,7 +11,17 @@ type GiftPageProps = {
 export async function generateMetadata({ params }: GiftPageProps): Promise<Metadata> {
   const { id } = await params;
   const generator = await getDateGeneratorById(id);
-  return { title: generator ? `${generator.title} — FizzMoments` : "FizzMoments" };
+
+  if (!generator) {
+    return { robots: NOINDEX_ROBOTS };
+  }
+
+  return pageSeo({
+    title: generator.title,
+    description: "Spin to find your next date night idea.",
+    path: `/gifts/date-generator/${id}`,
+    noindex: true,
+  });
 }
 
 export default async function DateGeneratorGiftPage({ params }: GiftPageProps) {

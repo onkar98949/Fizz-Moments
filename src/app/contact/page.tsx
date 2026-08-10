@@ -2,11 +2,13 @@ import type { Metadata } from "next";
 import { Navbar } from "@/components/shared/navbar";
 import { Footer } from "@/components/shared/footer";
 import { ContactForm } from "@/features/contact/contact-form";
+import { pageSeo } from "@/lib/seo";
 
-export const metadata: Metadata = {
-  title: "Contact — FizzMoments",
-  description: "Send FizzMoments your feedback, ideas, or improvements.",
-};
+export const metadata: Metadata = pageSeo({
+  title: "Contact",
+  description: "Got feedback, a bug, or an idea for a new gift or story scene? Get in touch with the people building FizzMoments.",
+  path: "/contact",
+});
 
 export default function ContactPage() {
   return (

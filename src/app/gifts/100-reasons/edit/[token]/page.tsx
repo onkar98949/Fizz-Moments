@@ -4,13 +4,15 @@ import { claimOwnershipIfUnowned } from "@/database/queries/ownership";
 import { getCurrentUserId } from "@/lib/supabase/server";
 import { InvalidLink } from "@/components/shared/invalid-link";
 import { HundredReasonsEditor } from "@/features/gifts/hundred-reasons/hundred-reasons-editor";
+import { NOINDEX_ROBOTS } from "@/lib/seo";
 
 type EditPageProps = {
   params: Promise<{ token: string }>;
 };
 
 export const metadata: Metadata = {
-  title: "Edit your 100 reasons — FizzMoments",
+  title: "Edit your 100 reasons",
+  robots: NOINDEX_ROBOTS,
 };
 
 export default async function HundredReasonsEditPage({ params }: EditPageProps) {

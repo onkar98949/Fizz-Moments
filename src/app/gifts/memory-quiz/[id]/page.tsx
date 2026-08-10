@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getMemoryQuizById } from "@/database/queries/gifts";
 import { InvalidLink } from "@/components/shared/invalid-link";
 import { MemoryQuizPlayer } from "@/features/gifts/memory-quiz/memory-quiz-player";
+import { NOINDEX_ROBOTS, pageSeo } from "@/lib/seo";
 
 type GiftPageProps = {
   params: Promise<{ id: string }>;
@@ -10,7 +11,17 @@ type GiftPageProps = {
 export async function generateMetadata({ params }: GiftPageProps): Promise<Metadata> {
   const { id } = await params;
   const quiz = await getMemoryQuizById(id);
-  return { title: quiz ? `${quiz.title} — FizzMoments` : "FizzMoments" };
+
+  if (!quiz) {
+    return { robots: NOINDEX_ROBOTS };
+  }
+
+  return pageSeo({
+    title: quiz.title,
+    description: "A quiz about your story together.",
+    path: `/gifts/memory-quiz/${id}`,
+    noindex: true,
+  });
 }
 
 export default async function MemoryQuizGiftPage({ params }: GiftPageProps) {

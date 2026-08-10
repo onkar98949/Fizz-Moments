@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getTreasureHuntById } from "@/database/queries/gifts";
 import { InvalidLink } from "@/components/shared/invalid-link";
 import { TreasureHuntPlayer } from "@/features/gifts/treasure-hunt/treasure-hunt-player";
+import { NOINDEX_ROBOTS, pageSeo } from "@/lib/seo";
 
 type HuntPageProps = {
   params: Promise<{ id: string }>;
@@ -10,7 +11,17 @@ type HuntPageProps = {
 export async function generateMetadata({ params }: HuntPageProps): Promise<Metadata> {
   const { id } = await params;
   const hunt = await getTreasureHuntById(id);
-  return { title: hunt ? `${hunt.title} — FizzMoments` : "FizzMoments" };
+
+  if (!hunt) {
+    return { robots: NOINDEX_ROBOTS };
+  }
+
+  return pageSeo({
+    title: hunt.title,
+    description: "A trail of clues leading to a surprise.",
+    path: `/gifts/treasure-hunt/${id}`,
+    noindex: true,
+  });
 }
 
 export default async function TreasureHuntPage({ params }: HuntPageProps) {

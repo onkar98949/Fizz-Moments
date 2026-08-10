@@ -4,13 +4,15 @@ import { claimOwnershipIfUnowned } from "@/database/queries/ownership";
 import { getCurrentUserId } from "@/lib/supabase/server";
 import { InvalidLink } from "@/components/shared/invalid-link";
 import { LoveWrappedEditor } from "@/features/gifts/love-wrapped/love-wrapped-editor";
+import { NOINDEX_ROBOTS } from "@/lib/seo";
 
 type EditPageProps = {
   params: Promise<{ token: string }>;
 };
 
 export const metadata: Metadata = {
-  title: "Edit your recap — FizzMoments",
+  title: "Edit your recap",
+  robots: NOINDEX_ROBOTS,
 };
 
 export default async function LoveWrappedEditPage({ params }: EditPageProps) {

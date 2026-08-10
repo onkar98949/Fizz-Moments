@@ -4,13 +4,15 @@ import { claimOwnershipIfUnowned } from "@/database/queries/ownership";
 import { getCurrentUserId } from "@/lib/supabase/server";
 import { InvalidLink } from "@/components/shared/invalid-link";
 import { DateGeneratorEditor } from "@/features/gifts/date-generator/date-generator-editor";
+import { NOINDEX_ROBOTS } from "@/lib/seo";
 
 type EditPageProps = {
   params: Promise<{ token: string }>;
 };
 
 export const metadata: Metadata = {
-  title: "Edit your date generator — FizzMoments",
+  title: "Edit your date generator",
+  robots: NOINDEX_ROBOTS,
 };
 
 export default async function DateGeneratorEditPage({ params }: EditPageProps) {

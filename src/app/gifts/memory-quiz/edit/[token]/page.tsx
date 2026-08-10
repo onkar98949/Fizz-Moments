@@ -4,13 +4,15 @@ import { claimOwnershipIfUnowned } from "@/database/queries/ownership";
 import { getCurrentUserId } from "@/lib/supabase/server";
 import { InvalidLink } from "@/components/shared/invalid-link";
 import { MemoryQuizEditor } from "@/features/gifts/memory-quiz/memory-quiz-editor";
+import { NOINDEX_ROBOTS } from "@/lib/seo";
 
 type EditPageProps = {
   params: Promise<{ token: string }>;
 };
 
 export const metadata: Metadata = {
-  title: "Edit your quiz — FizzMoments",
+  title: "Edit your quiz",
+  robots: NOINDEX_ROBOTS,
 };
 
 export default async function MemoryQuizEditPage({ params }: EditPageProps) {

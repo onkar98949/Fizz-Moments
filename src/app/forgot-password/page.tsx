@@ -2,10 +2,12 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { AuthShell } from "@/features/auth/auth-shell";
 import { ForgotPasswordForm } from "@/features/auth/forgot-password-form";
+import { NOINDEX_ROBOTS } from "@/lib/seo";
 
 export const metadata: Metadata = {
-  title: "Reset your password — FizzMoments",
+  title: "Reset your password",
   description: "Get a link to reset your FizzMoments password.",
+  robots: NOINDEX_ROBOTS,
 };
 
 export default function ForgotPasswordPage() {
