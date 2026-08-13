@@ -60,7 +60,10 @@ const fraunces = Fraunces({
 const bricolageGrotesque = Bricolage_Grotesque({
   variable: "--font-heading",
   subsets: ["latin"],
-  weight: ["500", "600", "700", "800"],
+  // Bricolage Grotesque is a variable font — fetching it as a single
+  // variable file (the default when `weight` is omitted) still covers
+  // every weight used on the page (500–800), but needs one build-time
+  // font-file fetch instead of four separate static-weight fetches.
 });
 
 const alexBrush = Alex_Brush({
