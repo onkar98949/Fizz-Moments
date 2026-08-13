@@ -1,12 +1,13 @@
 "use client";
 
+import Link from "next/link";
 import { motion } from "framer-motion";
 import { staggerContainer, staggerItem, viewportOnce } from "@/lib/motion";
 
 const OCCASIONS = [
-  { label: "Birthdays", tint: "coral" },
-  { label: "Best friends", tint: "sky" },
-  { label: "Long distance", tint: "lavender" },
+  { label: "Birthdays", tint: "coral", href: "/digital-birthday-gifts" },
+  { label: "Best friends", tint: "sky", href: "/gifts-for-friends" },
+  { label: "Long distance", tint: "lavender", href: "/long-distance-gifts" },
   { label: "Just because", tint: "yellow" },
   { label: "Anniversaries", tint: "coral" },
   { label: "Siblings", tint: "sky" },
@@ -28,7 +29,9 @@ const EASE = [0.16, 1, 0.3, 1] as const;
 /** No testimonials here on purpose — there's nothing real in the database
  *  to show, and fabricating quotes or numbers isn't worth the trust it'd
  *  cost if noticed. Occasion chips do the same job honestly: showing the
- *  actual range of people this is for. */
+ *  actual range of people this is for. A few link through to their own
+ *  dedicated occasion page where one exists — genuine internal linking,
+ *  not decoration. */
 export function MadeForSection() {
   return (
     <section className="px-6 py-20 sm:px-10 sm:py-24">
@@ -55,18 +58,27 @@ export function MadeForSection() {
           variants={staggerContainer}
           className="flex flex-wrap justify-center gap-3"
         >
-          {OCCASIONS.map((occasion) => (
-            <motion.span
-              key={occasion.label}
-              variants={staggerItem}
-              whileHover={{ y: -3, scale: 1.04 }}
-              transition={{ type: "spring", stiffness: 340, damping: 24 }}
-              className="text-foreground rounded-full px-4 py-2 text-sm font-medium"
-              style={{ backgroundColor: TINT_STYLE[occasion.tint] }}
-            >
-              {occasion.label}
-            </motion.span>
-          ))}
+          {OCCASIONS.map((occasion) => {
+            const chip = (
+              <motion.span
+                variants={staggerItem}
+                whileHover={{ y: -3, scale: 1.04 }}
+                transition={{ type: "spring", stiffness: 340, damping: 24 }}
+                className="text-foreground block rounded-full px-4 py-2 text-sm font-medium"
+                style={{ backgroundColor: TINT_STYLE[occasion.tint] }}
+              >
+                {occasion.label}
+              </motion.span>
+            );
+
+            return "href" in occasion ? (
+              <Link key={occasion.label} href={occasion.href}>
+                {chip}
+              </Link>
+            ) : (
+              <div key={occasion.label}>{chip}</div>
+            );
+          })}
         </motion.div>
       </div>
     </section>

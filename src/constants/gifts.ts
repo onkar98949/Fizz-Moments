@@ -17,8 +17,9 @@ export type GiftType = {
   status: GiftStatus;
 };
 
-/** The Romantic Interactive Gifts library — twelve mini interactive
- *  experiences, all wired to real creation flows. */
+/** The Interactive Digital Gifts library — twelve mini interactive
+ *  experiences, all wired to real creation flows. Not romance-only: gift
+ *  types here work equally for friends, family, and "just because." */
 export const GIFT_TYPES: GiftType[] = [
   {
     id: "scratch-cards",

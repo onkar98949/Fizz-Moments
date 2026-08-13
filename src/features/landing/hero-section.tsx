@@ -58,8 +58,8 @@ export function HeroSection({ storyTemplates }: HeroSectionProps) {
             transition={{ duration: 0.6, delay: 0.18, ease: EASE }}
             className="text-muted-foreground text-body-lg max-w-md text-balance"
           >
-            Add photos, memories, and a few inside jokes. We&apos;ll turn it into a page you can
-            send with one link.
+            Add photos, memories, and a few inside jokes. We&apos;ll turn it into a personalized
+            digital gift you can send with one link.
           </motion.p>
 
           <motion.div

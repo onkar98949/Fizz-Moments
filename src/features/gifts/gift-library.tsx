@@ -62,14 +62,15 @@ export function GiftLibrary() {
       <div className="flex flex-col items-center gap-4 text-center">
         <span className="text-primary-active bg-accent inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-meta font-medium tracking-wide uppercase">
           <Sparkles className="size-3.5" />
-          Romantic Interactive Gifts
+          Interactive Digital Gifts
         </span>
         <h1 className="font-display text-section text-balance">
           Interactive surprises they&apos;ll play, discover, and remember.
         </h1>
         <p className="text-muted-foreground text-body-lg max-w-xl text-balance">
-          Create playful, romantic digital gifts that go beyond watching a story — scratch to reveal
-          surprises, follow a treasure hunt, unlock a gift box, and more.
+          Create playful digital gifts that go beyond a text message — scratch to reveal surprises,
+          follow a treasure hunt, unlock a gift box, and more. For partners, best friends, family,
+          anyone.
         </p>
       </div>
 
