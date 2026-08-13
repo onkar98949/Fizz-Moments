@@ -3,7 +3,7 @@ import { Suspense } from "react";
 import Script from "next/script";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
-import { Alex_Brush, Fraunces, Geist, Geist_Mono } from "next/font/google";
+import { Alex_Brush, Bricolage_Grotesque, Fraunces, Geist, Geist_Mono } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
 import { PostHogProvider } from "./providers";
 import { PostHogPageView } from "./posthog-pageview";
@@ -50,6 +50,17 @@ const fraunces = Fraunces({
   subsets: ["latin"],
   weight: ["400", "500", "600"],
   style: ["normal", "italic"],
+});
+
+/** Bold, friendly heading font for the marketing homepage only — kept
+ *  separate from `--font-display` (Fraunces), which stays the serif used
+ *  throughout the actual gift/story editors and players. Swapping that
+ *  token globally would silently change the typography inside people's
+ *  personal letters and templates, which is out of scope here. */
+const bricolageGrotesque = Bricolage_Grotesque({
+  variable: "--font-heading",
+  subsets: ["latin"],
+  weight: ["500", "600", "700", "800"],
 });
 
 const alexBrush = Alex_Brush({
@@ -101,7 +112,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} ${fraunces.variable} ${alexBrush.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${fraunces.variable} ${alexBrush.variable} ${bricolageGrotesque.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-background text-foreground">
         <script

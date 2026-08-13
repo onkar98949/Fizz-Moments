@@ -5,6 +5,7 @@ import { HeroSection } from "@/features/landing/hero-section";
 import { ModesSection } from "@/features/landing/modes-section";
 import { StoryShowcase } from "@/features/landing/story-showcase";
 import { HowItWorks } from "@/features/landing/how-it-works";
+import { MadeForSection } from "@/features/landing/made-for-section";
 import { FinalCta } from "@/features/landing/final-cta";
 import { getStoryTemplateCatalog } from "@/database/queries/story-templates";
 import { DEFAULT_OG_IMAGE, SITE_NAME, SITE_URL } from "@/lib/seo";
@@ -54,10 +55,11 @@ export default async function Home() {
       />
       <Navbar />
       <main className="flex-1">
-        <HeroSection />
+        <HeroSection storyTemplates={storyTemplates} />
         <ModesSection />
-        <StoryShowcase storyTemplates={storyTemplates} />
         <HowItWorks />
+        <StoryShowcase storyTemplates={storyTemplates} />
+        <MadeForSection />
         <FinalCta />
       </main>
       <Footer />

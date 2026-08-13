@@ -38,14 +38,15 @@ export function FinalCta() {
         transition={{ duration: 0.7, ease: EASE }}
         className="mx-auto flex max-w-2xl flex-col items-center gap-7 px-6 text-center"
       >
-        <span className="text-eyebrow font-medium text-white/70 uppercase">Start today</span>
-        <h2 className="font-display text-hero text-balance text-white">
-          Create something they&apos;ll remember forever.
+        <span className="text-eyebrow font-semibold text-white/70 uppercase">Start today</span>
+        <h2 className="font-heading text-hero text-balance font-semibold text-white">
+          Make a moment they&apos;ll actually remember.
         </h2>
         <Button
           size="lg"
+          className="gap-2"
           nativeButton={false}
-          render={<Link href="/gifts">Start Creating</Link>}
+          render={<Link href="/gifts">Make a Moment</Link>}
         />
       </motion.div>
     </section>

@@ -119,7 +119,7 @@ export function NavbarClient({ user }: { user: AuthUser | null }) {
               size="sm"
               className="hidden sm:inline-flex"
               nativeButton={false}
-              render={<Link href="/gifts">Start Creating</Link>}
+              render={<Link href="/gifts">Make a Moment</Link>}
             />
             <button
               type="button"
@@ -195,7 +195,7 @@ export function NavbarClient({ user }: { user: AuthUser | null }) {
                 size="lg"
                 className="mt-3 w-full"
                 nativeButton={false}
-                render={<Link href="/gifts">Start Creating</Link>}
+                render={<Link href="/gifts">Make a Moment</Link>}
               />
             </nav>
           </motion.div>

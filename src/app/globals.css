@@ -48,6 +48,7 @@
   --color-sky: var(--sky);
   --color-warm-yellow: var(--warm-yellow);
   --font-script: var(--font-script);
+  --font-heading: var(--font-heading);
 
   /* Standardized radius scale — every rounded-* utility in the app resolves
      to one of these seven values. Nothing outside this scale is "random". */
@@ -192,6 +193,13 @@
 
   .font-script {
     font-family: var(--font-script), cursive;
+  }
+
+  /* Bold, friendly headline voice for the marketing homepage — separate
+     from .font-display (Fraunces), which stays reserved for the actual
+     gift/story editors and players. */
+  .font-heading {
+    font-family: var(--font-heading), sans-serif;
   }
 
   .text-gradient {
