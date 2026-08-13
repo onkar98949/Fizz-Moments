@@ -1,7 +1,8 @@
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { signInWithGoogleAction } from "@/actions/auth-actions";
-import { GoogleIcon } from "./google-icon";
+// Google sign-in temporarily disabled — see the commented block below.
+// import { Button } from "@/components/ui/button";
+// import { signInWithGoogleAction } from "@/actions/auth-actions";
+// import { GoogleIcon } from "./google-icon";
 import { EmailPasswordForm } from "./email-password-form";
 import { AuthErrorBanner } from "./auth-banners";
 import { AuthShell } from "./auth-shell";
@@ -29,10 +30,10 @@ const COPY = {
   },
 } as const;
 
-/** Google OAuth and a plain email/password form, side by side — "login"
- *  and "signup" only differ in framing and in the email form asking for a
- *  name. The Google button needs no client JS (a form posting to a Server
- *  Action); the password form is the one client island on this page. */
+/** Email/password auth — "login" and "signup" only differ in framing and
+ *  in the email form asking for a name. Google sign-in is temporarily
+ *  disabled (commented out below); the password form is the one client
+ *  island on this page. */
 export function AuthCard({ mode, next = "/", error }: AuthCardProps) {
   const copy = COPY[mode];
 
@@ -45,6 +46,8 @@ export function AuthCard({ mode, next = "/", error }: AuthCardProps) {
 
       {error ? <AuthErrorBanner message={error} /> : null}
 
+      {/* Google sign-in temporarily disabled — uncomment to restore, along
+          with the matching imports above.
       <form action={signInWithGoogleAction.bind(null, next)}>
         <Button type="submit" variant="outline" size="lg" className="w-full gap-3">
           <GoogleIcon className="size-5" />
@@ -57,6 +60,7 @@ export function AuthCard({ mode, next = "/", error }: AuthCardProps) {
         <span className="text-muted-foreground text-xs">or</span>
         <div className="bg-border h-px flex-1" />
       </div>
+      */}
 
       <EmailPasswordForm mode={mode} next={next} />
 

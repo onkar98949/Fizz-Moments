@@ -37,26 +37,30 @@ function humanizeAuthError(message: string): string {
   return known[message] ?? message;
 }
 
-/** Starts the Google OAuth flow. `next` is where the user should land
- *  after signing in — bind it when wiring this up as a form action, e.g.
- *  `action={signInWithGoogleAction.bind(null, "/create")}`. */
-export async function signInWithGoogleAction(next: string = "/") {
-  const origin = await getOrigin();
-  const supabase = await createSupabaseServerClient();
-
-  const { data, error } = await supabase.auth.signInWithOAuth({
-    provider: "google",
-    options: {
-      redirectTo: `${origin}/auth/callback?next=${encodeURIComponent(safeRedirectPath(next))}`,
-    },
-  });
-
-  if (error || !data.url) {
-    redirect(`/login?error=${encodeURIComponent("Couldn't start Google sign-in. Please try again.")}`);
-  }
-
-  redirect(data.url);
-}
+// Google sign-in temporarily disabled — commented out rather than removed
+// so it can be restored by uncommenting this function and its usage in
+// src/features/auth/auth-card.tsx.
+//
+// /** Starts the Google OAuth flow. `next` is where the user should land
+//  *  after signing in — bind it when wiring this up as a form action, e.g.
+//  *  `action={signInWithGoogleAction.bind(null, "/create")}`. */
+// export async function signInWithGoogleAction(next: string = "/") {
+//   const origin = await getOrigin();
+//   const supabase = await createSupabaseServerClient();
+//
+//   const { data, error } = await supabase.auth.signInWithOAuth({
+//     provider: "google",
+//     options: {
+//       redirectTo: `${origin}/auth/callback?next=${encodeURIComponent(safeRedirectPath(next))}`,
+//     },
+//   });
+//
+//   if (error || !data.url) {
+//     redirect(`/login?error=${encodeURIComponent("Couldn't start Google sign-in. Please try again.")}`);
+//   }
+//
+//   redirect(data.url);
+// }
 
 export async function signOutAction() {
   const supabase = await createSupabaseServerClient();

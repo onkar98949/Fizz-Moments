@@ -105,14 +105,16 @@ export function NavbarClient({ user }: { user: AuthUser | null }) {
               <div className="hidden sm:block">
                 <UserMenu user={user} />
               </div>
-            ) : (
+            ) : null /* Sign in link temporarily disabled — login/signup are
+            off. Restore this branch to bring it back:
+            (
               <Link
                 href="/login"
                 className="text-muted-foreground hover:text-foreground hidden text-[0.9rem] font-medium transition-colors duration-200 sm:inline-block"
               >
                 Sign in
               </Link>
-            )}
+            ) */}
             <Button
               size="sm"
               className="hidden sm:inline-flex"
@@ -178,14 +180,16 @@ export function NavbarClient({ user }: { user: AuthUser | null }) {
                     </button>
                   </form>
                 </div>
-              ) : (
+              ) : null /* Sign in link temporarily disabled — login/signup
+              are off. Restore this branch to bring it back:
+              (
                 <Link
                   href="/login"
                   className="text-muted-foreground hover:text-foreground block rounded-lg px-3 py-3 text-base font-medium transition-colors duration-200"
                 >
                   Sign in
                 </Link>
-              )}
+              ) */}
 
               <Button
                 size="lg"
